@@ -34,20 +34,36 @@ class Utm extends Tags
     }
 
     /**
-     * Determin if there is a certain UTM Parameter.
+     * Determine if there is a certain UTM Parameter.
+     *
+     * @return bool
+     */
+    public function is()
+    {
+        $type = $this->params->get('type', 'source');
+        $value = $this->params->get('value', null);
+        return UtmParameter::has($type, $value);
+    }
+
+    /**
+     * Alias for is()
      *
      * @return bool
      */
     public function has()
     {
+        return $this->is();
+    }
+
+    /**
+     * Determine if a value contains inside the key
+     *
+     * @return void
+     */
+    public function contains()
+    {
         $type = $this->params->get('type', 'source');
-
-        if ($this->params->has('contains')) {
-            $value = $this->params->get('contains');
-            return UtmParameter::contains($type, $value);
-        }
-
         $value = $this->params->get('value', null);
-        return UtmParameter::has($type, $value);
+        return UtmParameter::contains($type, $value);
     }
 }
