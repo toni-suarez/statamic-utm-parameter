@@ -1,6 +1,19 @@
 # Statamic UTM-Parameters
 
-> A helper to store and handle UTM parameters on Statamic websites.
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/suarez/statamic-utm-parameter.svg?style=flat-square)](https://packagist.org/packages/suarez/statamic-utm-parameter)
+[![StyleCI](https://github.styleci.io/repos/448347178/shield?branch=main)](https://github.styleci.io/repos/816752437?branch=main)
+[![Test PHP 8.x](https://github.com/toni-suarez/statamic-utm-parameter/actions/workflows/tests-php8.yml/badge.svg?branch=main)](https://github.com/toni-suarez/statamic-utm-parameter/actions/workflows/tests-php8.yml)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/suarez/statamic-utm-parameter?style=flat-square)](https://packagist.org/packages/suarez/statamic-utm-parameter)
+
+A helper to store and handle UTM parameters on Statamic websites.
+
+```antlers
+{{ if { utm:has type="source" value="google" } }}
+    <span>{{ utm:get type="medium" }}</span>
+{{ /if }}
+```
+
+---
 
 ## Installation
 
@@ -16,7 +29,7 @@ This addon provides convenient methods to retrieve, check, and use UTM parameter
 
 ### Antlers Templating
 
-**Retrieve All UTM Parameters**
+#### Retrieve All UTM Parameters
 
 Use `{{ utm:all }}` to get an array of all UTM parameters.
 
@@ -24,7 +37,7 @@ Use `{{ utm:all }}` to get an array of all UTM parameters.
 {{ utm:all }}
 ```
 
-**Retrieve a Specific UTM Parameter**
+#### Retrieve a Specific UTM Parameter
 
 Use `{{ utm:get }}` to get the value of a specific UTM parameter.
 
@@ -32,7 +45,7 @@ Use `{{ utm:get }}` to get the value of a specific UTM parameter.
 {{ utm:get type="term" }}
 ```
 
-**Check if a Specific UTM Parameter Exists**
+#### Check if a Specific UTM Parameter Exists
 Use {{ utm:has }} to check if a specific UTM parameter exists.
 
 ```antlers
