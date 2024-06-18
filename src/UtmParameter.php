@@ -73,7 +73,7 @@ class UtmParameter
 
 
     /**
-     * Determine if a value contains inside the key
+     * Determine if a value contains inside the key.
      *
      * @param string $key
      * @param string $value
