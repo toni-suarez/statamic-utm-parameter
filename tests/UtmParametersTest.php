@@ -24,7 +24,7 @@ class UtmParametersTest extends TestCase
         });
     }
 
-     public function test_it_should_be_bound_in_the_app()
+    public function test_it_should_be_bound_in_the_app()
     {
         $utm = app(UtmParameter::class);
         $this->assertInstanceOf(UtmParameter::class, $utm);

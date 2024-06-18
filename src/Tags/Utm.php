@@ -7,7 +7,7 @@ use Suarez\StatamicUtmParameters\UtmParameter;
 class Utm extends Tags
 {
     /**
-     * Default index
+     * Default index.
      *
      * @return array
      */
@@ -22,7 +22,7 @@ class Utm extends Tags
     }
 
     /**
-     * Retrieve the UTM Parameters
+     * Retrieve the UTM Parameters.
      *
      * @return string
      */
@@ -34,9 +34,9 @@ class Utm extends Tags
     }
 
     /**
-     * Determin if there is a certain UTM Parameter
+     * Determin if there is a certain UTM Parameter.
      *
-     * @return boolean
+     * @return bool
      */
     public function has()
     {

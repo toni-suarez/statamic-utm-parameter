@@ -58,7 +58,6 @@ class UtmParameter
      */
     public static function get($key)
     {
-
         $parameters = self::all();
 
         if (strpos($key, 'utm_') === false) {
