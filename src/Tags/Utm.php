@@ -41,8 +41,13 @@ class Utm extends Tags
     public function has()
     {
         $type = $this->params->get('type', 'source');
-        $value = $this->params->get('value', null);
 
+        if ($this->params->has('contains')) {
+            $value = $this->params->get('contains');
+            return UtmParameter::contains($type, $value);
+        }
+
+        $value = $this->params->get('value', null);
         return UtmParameter::has($type, $value);
     }
 }

@@ -119,10 +119,50 @@ class UtmParametersTest extends TestCase
         $this->assertTrue($hasGoogleSource);
     }
 
+    public function test_it_should_determine_if_utm_has_not_a_not_defined_utm_parameter()
+    {
+        $hasWrongParameter = UtmParameter::has('utm_something');
+        $this->assertIsBool($hasWrongParameter);
+        $this->assertFalse($hasWrongParameter);
+    }
+
     public function test_it_should_determine_if_utm_has_not_key_and_value()
     {
         $hasRandomSource = UtmParameter::has('random-source', 'random-value');
         $this->assertIsBool($hasRandomSource);
         $this->assertFalse($hasRandomSource);
+    }
+
+    public function test_it_should_determine_if_an_utm_contains_a_value()
+    {
+        $campaign = UtmParameter::contains('utm_campaign', 'campaign');
+        $this->assertIsBool($campaign);
+        $this->assertTrue($campaign);
+    }
+
+    public function test_it_should_determine_if_an_utm_contains_not_a_value()
+    {
+        $hasRandomCampaign = UtmParameter::contains('utm_campaign', 'some-thing');
+        $this->assertIsBool($hasRandomCampaign);
+        $this->assertFalse($hasRandomCampaign);
+    }
+
+    public function test_it_should_determine_if_an_utm_contains_a_non_string_value()
+    {
+        $campaign = UtmParameter::contains('utm_campaign', null);
+        $this->assertIsBool($campaign);
+        $this->assertFalse($campaign);
+
+        $term = UtmParameter::contains('utm_term', false);
+        $this->assertIsBool($term);
+        $this->assertFalse($term);
+
+        $content = UtmParameter::contains('utm_content', []);
+        $this->assertIsBool($content);
+        $this->assertFalse($content);
+
+        $medium = UtmParameter::contains('utm_medium', 1);
+        $this->assertIsBool($medium);
+        $this->assertFalse($medium);
     }
 }

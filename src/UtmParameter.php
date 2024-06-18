@@ -71,6 +71,33 @@ class UtmParameter
         return $parameters[$key];
     }
 
+
+    /**
+     * Determine if a value contains inside the key
+     *
+     * @param string $key
+     * @param string $value
+     * @return bool
+     */
+    public static function contains($key, $value)
+    {
+        $parameters = self::all();
+
+        if (strpos($key, 'utm_') === false) {
+            $key = 'utm_'.$key;
+        }
+
+        if (!array_key_exists($key, $parameters) || !is_string($value)) {
+            return false;
+        }
+
+        if (!array_key_exists($key, $parameters) && $value !== null) {
+            return false;
+        }
+
+        return str_contains(self::get($key), $value);
+    }
+
     /**
      * Determine if a UTM-Parameter exists.
      *
