@@ -4,6 +4,7 @@
 [![StyleCI](https://github.styleci.io/repos/448347178/shield?branch=main)](https://github.styleci.io/repos/816752437?branch=main)
 [![Test PHP 8.x](https://github.com/toni-suarez/statamic-utm-parameter/actions/workflows/tests-php8.yml/badge.svg?branch=main)](https://github.com/toni-suarez/statamic-utm-parameter/actions/workflows/tests-php8.yml)
 [![Packagist Downloads](https://img.shields.io/packagist/dt/suarez/statamic-utm-parameter?style=flat-square)](https://packagist.org/packages/suarez/statamic-utm-parameter)
+[![Statamic Addon](https://img.shields.io/badge/https%3A%2F%2Fstatamic.com%2Faddons%2Ftoni-suarez%2Futm-parameter?style=flat-square&logo=statamic&logoColor=rgb(255%2C%2038%2C%20158)&label=Statamic&link=https%3A%2F%2Fstatamic.com%2Faddons%2Ftoni-suarez%2Futm-parameter)](https://statamic.com/addons/toni-suarez/utm-parameter)
 
 A helper to store and handle UTM parameters on Statamic websites.
 
@@ -46,11 +47,20 @@ Use `{{ utm:get }}` to get the value of a specific UTM parameter.
 ```
 
 #### Check if a Specific UTM Parameter Exists
-Use {{ utm:has }} to check if a specific UTM parameter exists.
+Use {{ utm:has }} or {{ utm:is }} to check if a specific UTM parameter exists.
 
 ```antlers
-{{ if { utm:has type="source" value="google" } }}
-    <span>{{ utm:get type="medium" }}</span>
+{{ if { utm:has type="medium" value="newsletter" } }}
+    <span>Subscribe to our podcast</span>
+{{ /if }}
+```
+
+#### Check if a Specific UTM Parameter contains a value
+Use {{ utm:contains }} to check if a specific UTM parameter contains a specific value.
+
+```antlers
+{{ if { utm:contains type="campaign" value="summer" } }}
+    <p>Summer-Deals</p>
 {{ /if }}
 ```
 
@@ -87,8 +97,12 @@ To display the UTM term parameter:
 To display the UTM medium parameter if the source is `google`:
 
 ```antlers
-{{ if { utm:has type="source" value="google" } }}
-    <span>{{ utm:get type="medium" }}</span>
+{{ if { utm:has type="medium" value="newsletter" } }}
+    <span>Subscribe to our podcast</span>
+{{ /if }}
+
+{{ if { utm:contains type="campaign" value="summer" } }}
+    <p>Summer-Deals</p>
 {{ /if }}
 ```
 
