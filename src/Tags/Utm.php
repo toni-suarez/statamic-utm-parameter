@@ -46,7 +46,7 @@ class Utm extends Tags
     }
 
     /**
-     * Alias for is()
+     * Alias for is().
      *
      * @return bool
      */
@@ -56,7 +56,7 @@ class Utm extends Tags
     }
 
     /**
-     * Determine if a value contains inside the key
+     * Determine if a value contains inside the key.
      *
      * @return void
      */
