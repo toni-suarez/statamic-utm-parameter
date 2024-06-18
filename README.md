@@ -109,3 +109,6 @@ Here's a full example combining all the functionalities:
 {{ /if }}
 ```
 
+
+## License
+The Statamic UTM-Parameters addon is open-sourced software licensed under the MIT license.
