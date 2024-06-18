@@ -1,0 +1,53 @@
+{
+    "name": "suarez/statamic-utm-parameter",
+    "description": "A helper to store and handle UTM parameters on Statamic websites",
+    "homepage": "https://github.com/toni-suarez/statamic-utm-parameter",
+    "authors": [
+        {
+            "name": "Toni Suarez",
+            "email": "hallo@tonisuarez.de",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Suarez\\StatamicUtmParameters\\": "src"
+        },
+        "files": [
+            "./src/helper.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Suarez\\StatamicUtmParameters\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "statamic/cms": "^5.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0",
+        "friendsofphp/php-cs-fixer": "^3.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "pixelfear/composer-dist-plugin": true
+        }
+    },
+    "extra": {
+        "statamic": {
+            "name": "Utm-Parameters",
+            "description": "A helper to store and handle UTM parameters on Statamic websites"
+        },
+        "laravel": {
+            "providers": [
+                "Suarez\\StatamicUtmParameters\\ServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
