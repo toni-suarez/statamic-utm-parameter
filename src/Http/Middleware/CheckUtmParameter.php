@@ -28,9 +28,8 @@ class CheckUtmParameter
      * Determines whether the given request/response pair should accept UTM-Parameters.
      *
      * @param \Illuminate\Http\Request  $request
-     * @param \Illuminate\Http\Response $response
      *
-     * @return \Illuminate\Http\Request
+     * @return bool
      */
     protected function shouldAcceptUtmParameter(Request $request)
     {
