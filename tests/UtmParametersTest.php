@@ -19,9 +19,8 @@ class UtmParametersTest extends TestCase
             'utm_term'     => '{targetid}',
         ];
 
-        app()->bind(UtmParameter::class, function () use ($parameters) {
-            return new UtmParameter($parameters);
-        });
+        app()->singleton(UtmParameter::class, fn() => new UtmParameter());
+        app(UtmParameter::class)->boot($parameters);
     }
 
     public function test_it_should_be_bound_in_the_app()
@@ -164,5 +163,15 @@ class UtmParametersTest extends TestCase
         $medium = UtmParameter::contains('utm_medium', 1);
         $this->assertIsBool($medium);
         $this->assertFalse($medium);
+    }
+
+    public function test_it_should_clear_and_remove_the_utm_parameter_again()
+    {
+        $source = UtmParameter::get('source');
+        $this->assertEquals('google', $source);
+
+        UtmParameter::clear();
+        $emptySource = UtmParameter::get('source');
+        $this->assertNull($emptySource);
     }
 }

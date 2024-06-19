@@ -6,7 +6,7 @@
 [![Packagist Downloads](https://img.shields.io/packagist/dt/suarez/statamic-utm-parameter?style=flat-square)](https://packagist.org/packages/suarez/statamic-utm-parameter)
 [![Statamic Addon](https://img.shields.io/badge/https%3A%2F%2Fstatamic.com%2Faddons%2Ftoni-suarez%2Futm-parameter?style=flat-square&logo=statamic&logoColor=rgb(255%2C%2038%2C%20158)&label=Statamic&link=https%3A%2F%2Fstatamic.com%2Faddons%2Ftoni-suarez%2Futm-parameter)](https://statamic.com/addons/toni-suarez/utm-parameter)
 
-A helper to store and handle UTM parameters session based on statamic websites.
+A helper to store and handle UTM parameters session-based on statamic websites.
 
 ```antlers
 {{ if { utm:has type="source" value="google" } }}
@@ -23,6 +23,9 @@ You can search for this addon in the `Tools > Addons` section of the Statamic co
 ``` bash
 composer require suarez/statamic-utm-parameter
 ```
+
+**Note**: The UTM parameters are stored **session-based**, meaning they are only available during the user's current browsing session and will be cleared when the user closes their browser or navigates away from your website. This addon leverages the [built-in Laravel session management](https://laravel.com/docs/session#configuration) system for storage.
+
 
 ## Usage
 
@@ -62,6 +65,14 @@ Use {{ utm:contains }} to check if a specific UTM parameter contains a specific 
 {{ if { utm:contains type="campaign" value="summer" } }}
     <p>Summer-Deals</p>
 {{ /if }}
+```
+
+#### Clear UTM Parameters
+
+Use the clear method to remove and reset the UTM parameters from the session.
+
+```php
+UtmParameter::clear(); // true
 ```
 
 ### Parameter Types
@@ -118,11 +129,14 @@ Here's a full example combining all the functionalities:
     <li>Content: {{ utm:get type="content" }}</li>
 </ul>
 
-{{ if { utm:has type="source" value="google" } }}
-    <div>Thank you for visiting from Google! Your traffic medium is {{ utm:get type="medium" }}.</div>
+{{ if { utm:has type="source" value="ecosia" } }}
+    <div>Thank you for visiting from Ecosia!</div>
+{{ elseif { utm:has type="source" value="newsletter" } }}
+    <p>Welcome back, newsletter subscriber!</p>
+{{ else }}
+    <p>Subscribe to our newsletter!</p>
 {{ /if }}
 ```
-
 
 ## License
 The Statamic UTM-Parameters addon is open-sourced software licensed under the MIT license.
