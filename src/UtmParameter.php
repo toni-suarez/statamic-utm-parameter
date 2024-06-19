@@ -109,7 +109,7 @@ class UtmParameter
     }
 
     /**
-     * Clear and remove utm session
+     * Clear and remove utm session.
      *
      * @return bool
      */

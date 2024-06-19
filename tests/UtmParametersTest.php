@@ -19,7 +19,7 @@ class UtmParametersTest extends TestCase
             'utm_term'     => '{targetid}',
         ];
 
-        app()->singleton(UtmParameter::class, fn() => new UtmParameter());
+        app()->singleton(UtmParameter::class, fn () => new UtmParameter());
         app(UtmParameter::class)->boot($parameters);
     }
 
