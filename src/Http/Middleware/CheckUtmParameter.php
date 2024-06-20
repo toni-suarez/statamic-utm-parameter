@@ -18,7 +18,7 @@ class CheckUtmParameter
     public function handle(Request $request, Closure $next)
     {
         if ($this->shouldAcceptUtmParameter($request)) {
-            app(UtmParameter::class)->boot(session('utm'));
+            app(UtmParameter::class)->boot($request);
         }
 
         return $next($request);

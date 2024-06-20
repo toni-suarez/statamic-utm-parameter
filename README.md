@@ -24,7 +24,32 @@ You can search for this addon in the `Tools > Addons` section of the Statamic co
 composer require suarez/statamic-utm-parameter
 ```
 
+Optionally, you can publish the config file of this package with this command:
+```bash
+php artisan vendor:publish --tag="statamic-utm-parameter-config""
+```
+
 **Note**: The UTM parameters are stored **session-based**, meaning they are only available during the user's current browsing session and will be cleared when the user closes their browser or navigates away from your website. This addon leverages the [built-in Laravel session management](https://laravel.com/docs/session#configuration) system for storage.
+
+## Configuration
+
+The configuration file `config/statamic-utm-parameter.php` allows you to control the behavior of the UTM parameters handling.
+
+```php
+<?php
+
+return [
+  /*
+   * Control Overwriting UTM Parameters (default: false)
+   *
+   * This setting determines how UTM parameters are handled within a user's session.
+   *
+   * - Enabled (true): New UTM parameters will overwrite existing ones during the session.
+   * - Disabled (false): The initial UTM parameters will persist throughout the session.
+   */
+  'override_utm_parameters' => false,
+];
+```
 
 
 ## Usage
@@ -136,6 +161,56 @@ Here's a full example combining all the functionalities:
 {{ else }}
     <p>Subscribe to our newsletter!</p>
 {{ /if }}
+```
+
+## Extending the Middleware
+
+You can extend the middleware to customize the behavior of accepting UTM parameters. For example, you can override the `shouldAcceptUtmParameter` method.
+
+First, create a new middleware using Artisan:
+
+```bash
+php artisan make:middleware CustomMiddleware
+```
+
+Then, update the new middleware to extend UtmParameters and override the `shouldAcceptUtmParameter` method:
+
+```php
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Http\Request;
+use Suarez\StatamicUtmParameters\Http\Middleware\CheckUtmParameter;
+
+class CustomMiddleware extends CheckUtmParameter
+{
+    /**
+     * Determines whether the given request/response pair should accept UTM-Parameters.
+     *
+     * @param \Illuminate\Http\Request  $request
+     *
+     * @return bool
+     */
+    protected function shouldAcceptUtmParameter(Request $request)
+    {
+        return $request->isMethod('GET') || $request->isMethod('POST');
+    }
+}
+```
+
+Finally, update your `bootstrap/app.php` to use the CustomMiddleware:
+
+```php
+# bootstrap/app.php
+use App\Http\Middleware\CustomMiddleware;
+
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->web(append: [
+        CustomMiddleware::class,
+        // other middleware...
+    ]);
+})
 ```
 
 ## License
