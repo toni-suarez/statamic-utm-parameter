@@ -9,10 +9,14 @@ use Suarez\StatamicUtmParameters\Tests\TestCase;
 
 class UtmParametersTest extends TestCase
 {
+    protected $sessionKey;
+
     public function setUp(): void
     {
         parent::setUp();
         Config::set('statamic-utm-parameter.override_utm_parameters', false);
+        Config::set('statamic-utm-parameter.session_key', 'custom_utm_key');
+        $this->sessionKey = Config::get('statamic-utm-parameter.session_key');
 
         $parameters = [
             'utm_source'   => 'google',
@@ -26,13 +30,46 @@ class UtmParametersTest extends TestCase
 
         app()->singleton(UtmParameter::class, fn () => new UtmParameter());
         app(UtmParameter::class)->boot($request);
-        session(['utm' => $parameters]);
+        session([$this->sessionKey => $parameters]);
+    }
+
+    public function tearDown() : void
+    {
+        session()->forget($this->sessionKey);
+
+        Config::set('statamic-utm-parameter.override_utm_parameters', null);
+        Config::set('statamic-utm-parameter.session_key', null);
+
+        parent::tearDown();
     }
 
     public function test_it_should_be_bound_in_the_app()
     {
         $utm = app(UtmParameter::class);
         $this->assertInstanceOf(UtmParameter::class, $utm);
+    }
+
+    public function test_it_should_have_a_session_key()
+    {
+        $this->assertIsString($this->sessionKey);
+    }
+
+    public function test_it_should_have_a_session()
+    {
+        $sessionContent = session($this->sessionKey);
+        $this->assertIsArray($sessionContent);
+        $this->assertArrayHasKey('utm_source', $sessionContent);
+        $this->assertIsNotString(session($this->sessionKey));
+    }
+
+    public function test_it_should_also_clear_a_session()
+    {
+        $sessionContent = session($this->sessionKey);
+        $this->assertIsArray($sessionContent);
+
+        $sessionEmptyContent = session()->forget($this->sessionKey);
+        $this->assertIsNotArray($sessionEmptyContent);
+        $this->assertNull($sessionEmptyContent);
     }
 
     public function test_it_should_have_an_utm_attribute_bag()
@@ -154,19 +191,19 @@ class UtmParametersTest extends TestCase
 
     public function test_it_should_determine_if_an_utm_contains_a_non_string_value()
     {
-        $campaign = UtmParameter::contains('utm_campaign', null);
+        $campaign = UtmParameter::contains('utm_campaign', 'null');
         $this->assertIsBool($campaign);
         $this->assertFalse($campaign);
 
-        $term = UtmParameter::contains('utm_term', false);
+        $term = UtmParameter::contains('utm_term', 'false');
         $this->assertIsBool($term);
         $this->assertFalse($term);
 
-        $content = UtmParameter::contains('utm_content', []);
+        $content = UtmParameter::contains('utm_content', '[]');
         $this->assertIsBool($content);
         $this->assertFalse($content);
 
-        $medium = UtmParameter::contains('utm_medium', 1);
+        $medium = UtmParameter::contains('utm_medium', '1');
         $this->assertIsBool($medium);
         $this->assertFalse($medium);
     }
@@ -175,9 +212,11 @@ class UtmParametersTest extends TestCase
     {
         $source = UtmParameter::get('source');
         $this->assertEquals('google', $source);
+        $this->assertArrayHasKey('utm_source', session($this->sessionKey));
 
         UtmParameter::clear();
         $emptySource = UtmParameter::get('source');
+        $this->assertNull(session($this->sessionKey));
         $this->assertNull($emptySource);
     }
 
@@ -249,5 +288,77 @@ class UtmParametersTest extends TestCase
 
         $source = UtmParameter::get('source');
         $this->assertEquals('google', $source);
+    }
+
+    public function test_it_should_only_use_utm_parameters_in_the_allowed_list()
+    {
+        session()->forget($this->sessionKey);
+        Config::set('statamic-utm-parameter.override_utm_parameters', true);
+        Config::set('statamic-utm-parameter.allowed_utm_parameters', ['utm_source', 'utm_medium']);
+
+        $parameters = [
+            'utm_source'=> 'newsletter',
+            'utm_medium' => 'email',
+            'utm_campaign' => 'not-allowed',
+        ];
+
+        $request = Request::create('/test', 'GET', $parameters);
+        app(UtmParameter::class)->boot($request);
+
+        $source = UtmParameter::get('source');
+        $this->assertEquals('newsletter', $source);
+
+        $medium = UtmParameter::get('medium');
+        $this->assertEquals('email', $medium);
+
+        $campaign = UtmParameter::get('campaign');
+        $this->assertNull($campaign);
+    }
+
+    public function test_it_should_sanitize_utm_parameter()
+    {
+        Config::set('statamic-utm-parameter.override_utm_parameters', true);
+
+        $parameters = [
+            'utm_source'=> '<span onclick="alert(\'alert\')">google</span>',
+            'utm_medium' => 'cpc<script>alert(1)</script>',
+            'utm_campaign' => '<script href="x" onload="alert(1)">',
+            'utm_content' => '<img src="x" onerror="alert(1)">',
+            'utm_term' => '%3Cscript%3Ealert(1)%3C%2Fscript%3E',
+            'utm_sql_injection' => '" OR 1=1; --',
+            'utm_html_tag' => '<b>bold</b>',
+            'utm_<html onclick="alert(\'alert\')">_tag' => '<b>bold</b>',
+            'utm_" OR 1=1; --' => '<b>bold</b>',
+        ];
+
+        $request = Request::create('/test', 'GET', $parameters);
+        app(UtmParameter::class)->boot($request);
+
+        $source = UtmParameter::get('source');
+        $this->assertEquals('&lt;span onclick=&quot;alert(&#039;alert&#039;)&quot;&gt;google&lt;/span&gt;', $source);
+
+        $medium = UtmParameter::get('medium');
+        $this->assertEquals('cpc&lt;script&gt;alert(1)&lt;/script&gt;', $medium);
+
+        $campaign = UtmParameter::get('campaign');
+        $this->assertEquals('&lt;script href=&quot;x&quot; onload=&quot;alert(1)&quot;&gt;', $campaign);
+
+        $content = UtmParameter::get('content');
+        $this->assertEquals('&lt;img src=&quot;x&quot; onerror=&quot;alert(1)&quot;&gt;', $content);
+
+        $term = UtmParameter::get('term');
+        $this->assertEquals('%3Cscript%3Ealert(1)%3C%2Fscript%3E', $term);
+
+        $sql = UtmParameter::get('sql_injection');
+        $this->assertNull($sql);
+
+        $html = UtmParameter::get('html_tag');
+        $this->assertNull($html);
+
+        $randomKey = UtmParameter::get('utm_&lt;html onclick=&quot;alert(&#039;alert&#039;)&quot;&gt;_tag');
+        $this->assertNull($randomKey);
+
+        $randomSqlKey = UtmParameter::get('utm_&quot; OR 1=1; --');
+        $this->assertNull($randomSqlKey);
     }
 }
