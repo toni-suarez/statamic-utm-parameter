@@ -42,7 +42,10 @@
         "laravel": {
             "providers": [
                 "Suarez\\StatamicUtmParameters\\ServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "UtmParameter": "Suarez\\UtmParameter\\Facades\\UtmParameter"
+            }
         }
     },
     "scripts": {

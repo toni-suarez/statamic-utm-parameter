@@ -2,14 +2,14 @@
 namespace Suarez\StatamicUtmParameters\Tags;
 
 use Statamic\Tags\Tags;
-use Suarez\StatamicUtmParameters\UtmParameter;
+use Suarez\StatamicUtmParameters\Facades\UtmParameter;
 
 class Utm extends Tags
 {
     /**
      * Default index.
      *
-     * @return array
+     * @return string
      */
     public function index()
     {

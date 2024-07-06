@@ -4,8 +4,9 @@ namespace Suarez\StatamicUtmParameters\Tests;
 
 use Illuminate\Http\Request;
 use Statamic\Facades\Config;
-use Suarez\StatamicUtmParameters\UtmParameter;
 use Suarez\StatamicUtmParameters\Tests\TestCase;
+use Suarez\StatamicUtmParameters\Facades\UtmParameter;
+use Suarez\StatamicUtmParameters\UtmParameter as UtmParameterClass;
 
 class UtmParametersTest extends TestCase
 {
@@ -28,18 +29,13 @@ class UtmParametersTest extends TestCase
 
         $request = Request::create('/test', 'GET', $parameters);
 
-        app()->singleton(UtmParameter::class, fn () => new UtmParameter());
-        app(UtmParameter::class)->boot($request);
-        session([$this->sessionKey => $parameters]);
+        UtmParameter::boot($request);
+
     }
 
     public function tearDown() : void
     {
         session()->forget($this->sessionKey);
-
-        Config::set('statamic-utm-parameter.override_utm_parameters', null);
-        Config::set('statamic-utm-parameter.session_key', null);
-
         parent::tearDown();
     }
 
@@ -233,7 +229,7 @@ class UtmParametersTest extends TestCase
         ];
 
         $request = Request::create('/test', 'GET', $parameters);
-        app(UtmParameter::class)->boot($request);
+        UtmParameter::boot($request);
 
         $source = UtmParameter::get('source');
         $this->assertEquals('newsletter', $source);
@@ -258,7 +254,7 @@ class UtmParametersTest extends TestCase
         ];
 
         $request = Request::create('/test', 'GET', $parameters);
-        app(UtmParameter::class)->boot($request);
+        UtmParameter::boot($request);
 
         $source = UtmParameter::get('source');
         $this->assertEquals('google', $source);
@@ -277,14 +273,14 @@ class UtmParametersTest extends TestCase
 
         $parameters = ['id' => '0123456789', 'sorting' => 'relevance'];
         $request = Request::create('/new-page', 'GET', $parameters);
-        app(UtmParameter::class)->boot($request);
+        UtmParameter::boot($request);
 
         $source = UtmParameter::get('source');
         $this->assertEquals('google', $source);
 
         $parameters = [];
         $request = Request::create('/second-page', 'GET', $parameters);
-        app(UtmParameter::class)->boot($request);
+        UtmParameter::boot($request);
 
         $source = UtmParameter::get('source');
         $this->assertEquals('google', $source);
@@ -303,7 +299,7 @@ class UtmParametersTest extends TestCase
         ];
 
         $request = Request::create('/test', 'GET', $parameters);
-        app(UtmParameter::class)->boot($request);
+        UtmParameter::boot($request);
 
         $source = UtmParameter::get('source');
         $this->assertEquals('newsletter', $source);
@@ -332,7 +328,7 @@ class UtmParametersTest extends TestCase
         ];
 
         $request = Request::create('/test', 'GET', $parameters);
-        app(UtmParameter::class)->boot($request);
+        UtmParameter::boot($request);
 
         $source = UtmParameter::get('source');
         $this->assertEquals('&lt;span onclick=&quot;alert(&#039;alert&#039;)&quot;&gt;google&lt;/span&gt;', $source);
