@@ -30,7 +30,6 @@ class UtmParametersTest extends TestCase
         $request = Request::create('/test', 'GET', $parameters);
 
         UtmParameter::boot($request);
-
     }
 
     public function tearDown() : void
