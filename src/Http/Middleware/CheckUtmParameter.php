@@ -3,7 +3,7 @@ namespace Suarez\StatamicUtmParameters\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Suarez\StatamicUtmParameters\UtmParameter;
+use Suarez\StatamicUtmParameters\Facades\UtmParameter;
 
 class CheckUtmParameter
 {
@@ -18,7 +18,7 @@ class CheckUtmParameter
     public function handle(Request $request, Closure $next)
     {
         if ($this->shouldAcceptUtmParameter($request)) {
-            app(UtmParameter::class)->boot($request);
+            UtmParameter::boot($request);
         }
 
         return $next($request);

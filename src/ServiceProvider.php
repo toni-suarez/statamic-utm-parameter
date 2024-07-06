@@ -2,6 +2,7 @@
 
 namespace Suarez\StatamicUtmParameters;
 
+use Illuminate\Foundation\AliasLoader;
 use Statamic\Providers\AddonServiceProvider;
 use Suarez\StatamicUtmParameters\UtmParameter;
 use Suarez\StatamicUtmParameters\Http\Middleware\CheckUtmParameter;
@@ -20,8 +21,7 @@ class ServiceProvider extends AddonServiceProvider
 
     public function bootAddon()
     {
-        $this->app->singleton(UtmParameter::class, function () {
-            return new UtmParameter();
-        });
+        $this->app->singleton(UtmParameter::class, fn () => new UtmParameter());
+        AliasLoader::getInstance()->alias('UtmParameter', \Suarez\StatamicUtmParameters\Facades\UtmParameter::class);
     }
 }
