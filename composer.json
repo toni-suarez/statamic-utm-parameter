@@ -2,13 +2,6 @@
     "name": "suarez/statamic-utm-parameter",
     "description": "A helper to store and handle UTM parameters on Statamic websites",
     "homepage": "https://github.com/toni-suarez/statamic-utm-parameter",
-    "authors": [
-        {
-            "name": "Toni Suarez",
-            "email": "hallo@tonisuarez.de",
-            "role": "Developer"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "Suarez\\StatamicUtmParameters\\": "src"
@@ -23,7 +16,7 @@
         }
     },
     "require": {
-        "statamic/cms": "^5.0"
+        "statamic/cms": "^5.0|^6.0"
     },
     "require-dev": {
         "orchestra/testbench": "^9.0",
