@@ -26,7 +26,7 @@ composer require suarez/statamic-utm-parameter
 
 Optionally, you can publish the config file of this package with this command:
 ```bash
-php artisan vendor:publish --tag="statamic-utm-parameter-config""
+php artisan vendor:publish --tag="statamic-utm-parameter-config"
 ```
 
 **Note**: The UTM parameters are stored **session-based**, meaning they are only available during the user's current browsing session and will be cleared when the user closes their browser or navigates away from your website. This addon leverages the [built-in Laravel session management](https://laravel.com/docs/session#configuration) system for storage.
